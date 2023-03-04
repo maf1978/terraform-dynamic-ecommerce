@@ -47,4 +47,29 @@ variable "ssh_location" {
   type        = string
 }
 
+#rds variables
+variable "database_snapshot_identifier" {
+  default     = "<arn_of_snapshot"
+  description = "the datbase snapshot arn "
+  type        = string
+}
+
+variable "database_instance_identifier" {
+  default     = "<instance name created"
+  description = "the datbase Instance type"
+  type        = string
+}
+
+variable "database_instance_identifier" {
+  default     = "<instance name created"
+  description = "the datbase Instance identifier"
+  type        = string
+}
+
+variable "multi_az_deployment" {
+  default     = false
+  description = "create a satcne db instance"
+  type        = bool
+}
+
 
