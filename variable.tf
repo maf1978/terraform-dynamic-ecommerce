@@ -74,9 +74,15 @@ variable "multi_az_deployment" {
 
 
 # ALB variables
-
 variable "ssh_certificate_arn" {
   default     = "<arn certificate>"
   description = "ssl certificate arn"
+  type        = string
+}
+
+# sns topic variables
+variable "operator_email" {
+  default     = "ferreromarcos@hotmail.com"
+  description = "valid email"
   type        = string
 }
