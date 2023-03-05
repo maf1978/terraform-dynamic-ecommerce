@@ -86,3 +86,16 @@ variable "operator_email" {
   description = "valid email"
   type        = string
 }
+
+#auto scaling notes variables
+variable "launch_template_name" {
+  default     = "dev-launch-template"
+  description = "name of the launch template"
+  type        = string
+}
+
+variable "ec2_image_ID" {
+  default     = "ami-id"
+  description = "name of the launch tempe"
+  type        = string
+}
