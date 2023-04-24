@@ -22,7 +22,7 @@ resource "aws_eip" "eip_for_nat_gateway_az2" {
 # terraform create aws nat gateway
 resource "aws_nat_gateway" "nat_gateway_az1" {
   allocation_id = aws_eip.eip_for_nat_gateway_az1.id
-  subnet_id     = [aws_subnet.private_app_subnet_az1]
+  subnet_id     = aws_subnet.public_subnet_az1.id
 
   tags = {
     Name = "nat getway AZ1"
@@ -30,6 +30,7 @@ resource "aws_nat_gateway" "nat_gateway_az1" {
 
   # to ensure proper ordering, it is recommended to add an explicit dependency
   # on the internet gateway for the vpc.
+  #depend on will allow to wait to create the services
   depends_on = [aws_internet_gateway.internet_gateway]
 }
 
@@ -37,7 +38,7 @@ resource "aws_nat_gateway" "nat_gateway_az1" {
 # terraform create aws nat gateway
 resource "aws_nat_gateway" "nat_gateway_az2" {
   allocation_id = aws_eip.eip_for_nat_gateway_az2.id
-  subnet_id     = [aws_subnet.public_subnet_az2.id]
+  subnet_id     = aws_subnet.public_subnet_az2.id
 
   tags = {
     Name = "nat getway AZ2"
