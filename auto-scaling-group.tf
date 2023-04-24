@@ -5,52 +5,52 @@ resource "aws_launch_template" "webserver_launch_template" {
   image_id      = var.ec2_image_ID
   instance_type = var.ec2_instance_type
   key_name      = var.ec2_key_pair 
-  description   = 
+  description   = "lunch template for asg"
 
   monitoring {
-    enabled = 
+    enabled = true
   }
 
-  vpc_security_group_ids = 
+  vpc_security_group_ids = [aws_security_group.webserver_security_group.id]
 }
 
 # create auto scaling group
 # terraform aws autoscaling group
 resource "aws_autoscaling_group" "auto_scaling_group" {
-  vpc_zone_identifier = 
-  desired_capacity    = 
-  max_size            = 
-  min_size            = 
-  name                = 
-  health_check_type   = 
+  vpc_zone_identifier = [aws_subnet.private_app_subnet_az1.id, aws_subnet.private_app_subnet_az2.id]
+  desired_capacity    = 2
+  max_size            = 4
+  min_size            = 1
+  name                = "dev-asg"
+  health_check_type   = "ELB"
 
   launch_template {
-    name    = 
+    name    = aws_luanch_template.webserver_lunch_template.name
     version = "$Latest"
   }
 
   tag {
-    key                 = 
-    value               = 
-    propagate_at_launch = 
+    key                 = "Name"
+    value               = "asg-webserver"
+    propagate_at_launch = true
   }
 
   lifecycle {
-    ignore_changes      = 
+    ignore_changes      = [target_group_arns]
   }
 }
 
 # attach auto scaling group to alb target group
 # terraform aws autoscaling attachment
 resource "aws_autoscaling_attachment" "asg_alb_target_group_attachment" {
-  autoscaling_group_name = 
-  lb_target_group_arn    = 
+  autoscaling_group_name = aws_autoscaling_group.auto_scaling_group.id
+  lb_target_group_arn    = aws_lb_target_group.alb_target_group.arn 
 }
 
 # create an auto scaling group notification
 # terraform aws autoscaling notification
 resource "aws_autoscaling_notification" "webserver_asg_notifications" {
-  group_names = 
+  group_names = [aws_autoscaling_group.auto_scaling_group.id]
 
   notifications = [
     "autoscaling:EC2_INSTANCE_LAUNCH",
@@ -59,5 +59,5 @@ resource "aws_autoscaling_notification" "webserver_asg_notifications" {
     "autoscaling:EC2_INSTANCE_TERMINATE_ERROR",
   ]
 
-  topic_arn = 
+  topic_arn = aws_sns_topic.user_update.arn 
 }
